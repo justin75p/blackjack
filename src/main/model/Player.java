@@ -12,4 +12,42 @@ public class Player {
         cards = new ArrayList<Card>();
         balance = 0;
     }
+
+    // MODIFIES: this
+    // EFFECTS: draw a Card
+    public void hit() {
+
+    }
+
+    // EFFECTS: skip turn
+    public void stand() {
+
+    }
+
+    // MODIFIES: this
+    // EFFECTS: places bet of amount
+    public void wager(int amount) {
+
+    }
+
+    // EFFECTS: returns the total value of the player's hand
+    public int getHandValues() {
+        return 0;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds amount to player's balance
+    public void addWinnings(int amount) {
+
+    }
+
+    // MODIFIES: this
+    // EFFECTS: clears the player's cards
+    public void resetHand() {
+        cards.clear();
+    }
+
+    public int getBalance() {
+        return balance;
+    }
 }
