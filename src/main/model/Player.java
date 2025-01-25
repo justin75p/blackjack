@@ -1,26 +1,17 @@
 package main.model;
 
-import java.util.List;
-import java.util.ArrayList;
-
 // Represents a player having cards and balance
-public class Player {
-    private List<Card> cards;
+public class Player extends CardHolder {
     private int balance;
 
     public Player() {
-        cards = new ArrayList<Card>();
         balance = 0;
     }
 
     // MODIFIES: this
-    // EFFECTS: draw a Card
-    public void hit() {
-
-    }
-
-    // EFFECTS: skip turn
-    public void stand() {
+    // EFFECTS: player has the choice to hit, or stand.
+    @Override
+    public void playTurn() {
 
     }
 
@@ -30,23 +21,13 @@ public class Player {
 
     }
 
-    // EFFECTS: returns the total value of the player's hand
-    public int getHandValues() {
-        return 0;
-    }
-
     // MODIFIES: this
     // EFFECTS: adds amount to player's balance
     public void addWinnings(int amount) {
 
     }
 
-    // MODIFIES: this
-    // EFFECTS: clears the player's cards
-    public void resetHand() {
-        cards.clear();
-    }
-
+    // EFFECTS: returns player's balance
     public int getBalance() {
         return balance;
     }
