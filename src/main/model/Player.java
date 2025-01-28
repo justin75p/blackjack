@@ -2,10 +2,11 @@ package main.model;
 
 // Represents a player having cards and balance
 public class Player extends CardHolder {
+    private final int INITIAL_BALANCE = 100;
     private int balance;
 
     public Player() {
-        balance = 0;
+        balance = INITIAL_BALANCE;
     }
 
     // MODIFIES: this
