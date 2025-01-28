@@ -8,4 +8,14 @@ public class Card {
     public Card(Rank rank, Suit suit) {
 
     }
+
+    // EFFECTS: returns rank of card
+    public Rank getRank() {
+        return rank;
+    }
+
+    // EFFECTS: returns suit of card
+    public Suit getSuit() {
+        return suit;
+    }
 }
