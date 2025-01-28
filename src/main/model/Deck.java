@@ -25,8 +25,12 @@ public class Deck {
     }
 
     // MODIFIES: this
-    // EFFECTS: draws a random card
+    // EFFECTS: draws a card 
     public Card draw() {
         return null;
+    }
+
+    public List<Card> getCards() {
+        return cards;
     }
 }
