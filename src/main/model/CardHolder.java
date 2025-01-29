@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CardHolder {
-    private List<Card> cards;
+    protected List<Card> cards;
 
     public CardHolder() {
         cards = new ArrayList<>();
@@ -13,6 +13,11 @@ public abstract class CardHolder {
     // EFFECTS: returns the total value of cards in hand
     public int getHandValue() {
         return 0;
+    }
+
+    // EFFECTS: returns the holder's cards
+    public List<Card> getCards() {
+        return cards;
     }
 
     // MODIFIES: this
