@@ -6,6 +6,9 @@ public class Dealer extends CardHolder {
 
     public Dealer() {
         deck = new Deck();
+        // Dealer has two cards, one hidden
+        cards.add(deck.draw());
+        cards.add(deck.draw());
     }
 
     // MODIFIES: this
@@ -13,6 +16,12 @@ public class Dealer extends CardHolder {
     @Override
     public void playTurn() {
         
+    }
+
+    // MODIFIES: this
+    // EFFECTS: draws a card and deals it to player
+    public void deal(Player player) {
+
     }
     
 }
