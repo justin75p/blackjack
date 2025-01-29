@@ -17,7 +17,7 @@ public class Player extends CardHolder {
     }
 
     // MODIFIES: this
-    // EFFECTS: places bet of amount
+    // EFFECTS: places bet of amount, balance is unchanged if amount > balance
     public void wager(int amount) {
 
     }
