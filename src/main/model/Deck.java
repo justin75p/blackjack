@@ -11,6 +11,7 @@ public class Deck {
     public Deck() {
         cards = new ArrayList<>();
         initializeDeck();
+        shuffle();
     }
 
     // MODIFIES: this
