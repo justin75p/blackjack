@@ -6,7 +6,8 @@ public class Card {
     private Suit suit;
 
     public Card(Rank rank, Suit suit) {
-
+        this.rank = rank;
+        this.suit = suit;
     }
 
     // EFFECTS: returns rank of card
