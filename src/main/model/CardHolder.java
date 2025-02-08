@@ -59,5 +59,5 @@ public abstract class CardHolder {
         return false;
     }
 
-    public abstract void playTurn();
+    public abstract boolean playTurn();
 }
