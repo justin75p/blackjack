@@ -4,28 +4,34 @@ package main.model;
 public class Player extends CardHolder {
     private final int INITIAL_BALANCE = 100;
     private int balance;
+    private int amountWagered;
 
     public Player() {
         balance = INITIAL_BALANCE;
+        amountWagered = 0;
     }
 
     // MODIFIES: this
     // EFFECTS: player has the choice to hit, or stand.
     @Override
-    public void playTurn() {
-
+    public void playTurn(boolean hit) {
+        
     }
 
     // MODIFIES: this
     // EFFECTS: places bet of amount, balance is unchanged if amount > balance
     public void wager(int amount) {
-
+        if (amount <= balance) {
+            balance -= amount;
+            amountWagered = amount;
+        }
     }
 
     // MODIFIES: this
     // EFFECTS: adds amount to player's balance
     public void addWinnings(int amount) {
-
+        balance += amount;
+        amountWagered = 0;
     }
 
     // EFFECTS: returns player's balance
