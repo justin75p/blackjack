@@ -8,8 +8,10 @@ public class Dealer extends CardHolder {
     public Dealer() {
         deck = new Deck();
         // Dealer has two cards, one hidden
-        cards.add(deck.draw());
         hiddenCard = deck.draw();
+        cards.add(hiddenCard);
+        cards.add(deck.draw());
+        
     }
 
     // MODIFIES: this
@@ -17,11 +19,10 @@ public class Dealer extends CardHolder {
     @Override
     public void playTurn(boolean hit) {
         // Dealer must hit
-        if (getHandValue() <= 16) {
-            cards.add(deck.draw());
-            return true;
-        } else { // Dealer must stand
-            return false;
+        if (hit) {
+            if (getHandValue() <= 16) {
+                cards.add(deck.draw());
+            }   
         }
     }
 
