@@ -14,6 +14,8 @@ public abstract class CardHolder {
 
     // EFFECTS: returns the total value of cards in hand
     public int getHandValue() {
+        // Reset the ace count
+        aceCount = 0;
         int value = 0;
         for (int i = 0; i < cards.size(); i++) {
             value += cards.get(i).getRank().getValue();
