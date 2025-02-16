@@ -103,6 +103,7 @@
             hitButton = new JButton("Hit");
             hitButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
             hitButton.setBorder(BorderFactory.createEmptyBorder(10, 55, 10, 55));
+            hitButton.addActionListener(new HitButtonHandler());
             playerPanel.add(hitButton);
             playerPanel.add(Box.createHorizontalStrut(10));
 
@@ -146,7 +147,12 @@
         }
 
         private void initializePlayerCards() {
-            dealer.deal(player);
+            dealCard(player);
+            dealCard(player);
+        }
+
+        private void dealCard(Player player) {
+            playerCardsPanel.removeAll();
             dealer.deal(player);
             for (Card card : player.getCards()) {
                 BufferedImage image;
@@ -158,7 +164,7 @@
                     playerCardsPanel.add(cardLabel);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    System.out.println("Error: Unable to load image from " + BACK_CARD_PATH);
+                    System.out.println("Error: Unable to load image from " + card.getImageFileName());
                 }
 
                 // Refresh
@@ -166,5 +172,23 @@
                 gamePanel.repaint();
             
             }
+        }
+
+        public class HitButtonHandler implements ActionListener {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dealCard(player);
+            }
+            
+        }
+
+        public class StandButtonHandler implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+            
         }
     }
