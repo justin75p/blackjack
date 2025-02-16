@@ -14,12 +14,14 @@ public class Player extends CardHolder {
     }
 
     // MODIFIES: this
-    // EFFECTS: places bet of amount, balance is unchanged if amount > balance
-    public void wager(double amount) {
+    // EFFECTS: places bet of amount if amount <= balance and returns true, false otherwise
+    public boolean wager(double amount) {
         if (amount <= balance) {
             balance -= amount;
             amountWagered = amount;
+            return true;
         }
+        return false;
     }
 
     // MODIFIES: this
