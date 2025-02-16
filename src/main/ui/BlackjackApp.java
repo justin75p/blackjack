@@ -151,26 +151,40 @@
             dealCard(player);
         }
 
+        // Helper method for dealing and drawing cards
         private void dealCard(Player player) {
-            playerCardsPanel.removeAll();
-            dealer.deal(player);
-            for (Card card : player.getCards()) {
-                BufferedImage image;
-                try {
-                    image = ImageIO.read(new File(card.getImageFileName()));
-                    Image scaledImage = image.getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
-                    ImageIcon cardIcon = new ImageIcon(scaledImage);
-                    JLabel cardLabel = new JLabel(cardIcon);
-                    playerCardsPanel.add(cardLabel);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("Error: Unable to load image from " + card.getImageFileName());
+            if (player.getCards().size() < 5 && player.getHandValue() < 21) {
+                playerCardsPanel.removeAll();
+                dealer.deal(player);
+                for (Card card : player.getCards()) {
+                    BufferedImage image;
+                    try {
+                        image = ImageIO.read(new File(card.getImageFileName()));
+                        Image scaledImage = image.getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
+                        ImageIcon cardIcon = new ImageIcon(scaledImage);
+                        JLabel cardLabel = new JLabel(cardIcon);
+                        playerCardsPanel.add(cardLabel);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("Error: Unable to load image from " + card.getImageFileName());
+                    }
                 }
 
+                checkHandStatus(player);
                 // Refresh
                 gamePanel.revalidate();
                 gamePanel.repaint();
-            
+            } else {
+                // Player will automatically win if has 5 cards in hand and overall value is < 21
+            }
+        }
+
+        // Helper method to check the status of player's hand (blackjack, bust, etc)
+        private void checkHandStatus(Player player) {
+            if (player.hasBlackjack() || player.getHandValue() == 21) {
+                // Player wins, gets paid out
+            } else {
+                // Player busts
             }
         }
 
