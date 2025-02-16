@@ -20,7 +20,8 @@
     import javax.swing.JTextField;
 
     import main.model.Card;
-    import main.model.Dealer;
+import main.model.CardHolder;
+import main.model.Dealer;
     import main.model.Player;
 
     public class BlackjackApp {
@@ -110,6 +111,7 @@
             standButton = new JButton("Stand");
             standButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
             standButton.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
+            standButton.addActionListener(new StandButtonHandler());
             playerPanel.add(standButton);
             playerPanel.add(Box.createHorizontalStrut(10));
 
@@ -122,20 +124,17 @@
         private void initializeDealerCards() {
         
             try {
+                // Draw the shown card
+                dealerDrawCard();
+
+                // Draw the hidden card
                 BufferedImage image = ImageIO.read(new File(BACK_CARD_PATH));
-            
                 Image scaledImage = image.getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
                 ImageIcon hiddenCardIcon = new ImageIcon(scaledImage);
                 JLabel hiddenCardLabel = new JLabel(hiddenCardIcon);
-
-                image = ImageIO.read(new File(dealer.getCards().get(1).getImageFileName()));
-                scaledImage = image.getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
-                ImageIcon shownCardIcon = new ImageIcon(scaledImage);
-                JLabel shownCardLabel = new JLabel(shownCardIcon);
         
-                // Add it to dealer panel
+                // Add hidden card to dealer panel
                 dealerPanel.add(hiddenCardLabel);
-                dealerPanel.add(shownCardLabel);
         
                 // Refresh GUI
                 gamePanel.revalidate();
@@ -144,6 +143,28 @@
                 e.printStackTrace();
                 System.out.println("Error: Unable to load image from " + BACK_CARD_PATH);
             }
+        }
+
+        // Helper method for when the dealer draws cards
+        private void dealerDrawCard() {
+            dealerPanel.removeAll();
+            dealer.drawCard();
+            for (int i = 0; i < dealer.getCards().size(); i++) {
+                BufferedImage image;
+                try {
+                    image = ImageIO.read(new File(dealer.getCards().get(i).getImageFileName()));
+                    Image scaledImage = image.getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
+                    ImageIcon cardIcon = new ImageIcon(scaledImage);
+                    JLabel cardLabel = new JLabel(cardIcon);
+                    dealerPanel.add(cardLabel);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("Error: Unable to load image from " + dealer.getCards().get(i).getImageFileName());
+                }
+            }
+            checkHandStatus(dealer);
+            gamePanel.revalidate();
+            gamePanel.repaint();
         }
 
         private void initializePlayerCards() {
@@ -180,11 +201,11 @@
         }
 
         // Helper method to check the status of player's hand (blackjack, bust, etc)
-        private void checkHandStatus(Player player) {
-            if (player.hasBlackjack() || player.getHandValue() == 21) {
-                // Player wins, gets paid out
+        private void checkHandStatus(CardHolder holder) {
+            if (holder.hasBlackjack() || holder.getHandValue() == 21) {
+                // Holder wins, if player; gets paid out
             } else {
-                // Player busts
+                // Holder busts
             }
         }
 
@@ -192,7 +213,9 @@
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                dealCard(player);
+                if (!player.isTurnOver()) {
+                    dealCard(player);
+                }
             }
             
         }
@@ -201,7 +224,10 @@
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                player.setTurnOver();
+                while (dealer.getHandValue() < 17) {
+                    dealerDrawCard();
+                }
             }
             
         }
