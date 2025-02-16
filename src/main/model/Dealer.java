@@ -15,18 +15,6 @@ public class Dealer extends CardHolder {
     }
 
     // MODIFIES: this
-    // EFFECTS: determines if the dealer should hit or stand
-    @Override
-    public void playTurn(boolean hit) {
-        // Dealer must hit
-        if (hit) {
-            if (getHandValue() <= 16) {
-                cards.add(deck.draw());
-            }   
-        }
-    }
-
-    // MODIFIES: this
     // EFFECTS: draws a card and deals it to player
     public void deal(Player player) {
         Card card = deck.draw();

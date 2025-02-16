@@ -12,13 +12,6 @@ public class Player extends CardHolder {
     }
 
     // MODIFIES: this
-    // EFFECTS: player has the choice to hit, or stand.
-    @Override
-    public void playTurn(boolean hit) {
-        
-    }
-
-    // MODIFIES: this
     // EFFECTS: places bet of amount, balance is unchanged if amount > balance
     public void wager(int amount) {
         if (amount <= balance) {
