@@ -7,11 +7,10 @@ public class Dealer extends CardHolder {
 
     public Dealer() {
         deck = new Deck();
-        // Dealer has two cards, one hidden
-        hiddenCard = deck.draw();
-        cards.add(hiddenCard);
+    }
+
+    public void drawCard() {
         cards.add(deck.draw());
-        
     }
 
     // MODIFIES: this
