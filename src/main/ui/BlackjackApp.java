@@ -20,8 +20,7 @@
     import javax.swing.JTextField;
 
     import main.model.Card;
-import main.model.CardHolder;
-import main.model.Dealer;
+    import main.model.Dealer;
     import main.model.Player;
 
     public class BlackjackApp {
@@ -162,7 +161,6 @@ import main.model.Dealer;
                     System.out.println("Error: Unable to load image from " + dealer.getCards().get(i).getImageFileName());
                 }
             }
-            checkHandStatus(dealer);
             gamePanel.revalidate();
             gamePanel.repaint();
         }
@@ -190,22 +188,11 @@ import main.model.Dealer;
                         System.out.println("Error: Unable to load image from " + card.getImageFileName());
                     }
                 }
-
-                checkHandStatus(player);
                 // Refresh
                 gamePanel.revalidate();
                 gamePanel.repaint();
             } else {
                 // Player will automatically win if has 5 cards in hand and overall value is < 21
-            }
-        }
-
-        // Helper method to check the status of player's hand (blackjack, bust, etc)
-        private void checkHandStatus(CardHolder holder) {
-            if (holder.hasBlackjack() || holder.getHandValue() == 21) {
-                // Holder wins, if player; gets paid out
-            } else {
-                // Holder busts
             }
         }
 
@@ -224,10 +211,13 @@ import main.model.Dealer;
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                player.setTurnOver();
-                while (dealer.getHandValue() < 17) {
-                    dealerDrawCard();
+                if (player.getHandValue() <= 21) {
+                    player.setTurnOver();
+                    while (dealer.getHandValue() < 17) {
+                        dealerDrawCard();
+                    }
                 }
+                
             }
             
         }
