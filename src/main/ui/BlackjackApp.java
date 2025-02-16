@@ -16,10 +16,13 @@
     import javax.swing.JButton;
     import javax.swing.JFrame;
     import javax.swing.JLabel;
+    import javax.swing.JOptionPane;
     import javax.swing.JPanel;
+    import javax.swing.JTextArea;
     import javax.swing.JTextField;
+    import javax.swing.border.Border;
 
-    import main.model.Card;
+import main.model.Card;
     import main.model.Dealer;
     import main.model.Player;
 
@@ -117,6 +120,7 @@
             wagerButton = new JButton("Wager");
             wagerButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
             wagerButton.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
+            wagerButton.addActionListener(new WagerButtonHandler());
             playerPanel.add(wagerButton);
         }
 
@@ -218,6 +222,26 @@
                     }
                 }
                 
+            }
+            
+        }
+
+        public class WagerButtonHandler implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String amount = JOptionPane.showInputDialog("Enter your wager amount:");
+                try {
+                    Double.parseDouble(amount);
+                } catch (NumberFormatException n) {
+                    JOptionPane.showMessageDialog(null, "Invalid input. Try again.");
+                }
+
+                if (player.wager(Double.parseDouble(amount))) {
+                    // stub
+                } else {
+                    JOptionPane.showMessageDialog(null, "Insufficient balance.");
+                }
             }
             
         }
