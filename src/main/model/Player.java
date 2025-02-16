@@ -4,8 +4,8 @@ package main.model;
 public class Player extends CardHolder {
     private final int INITIAL_BALANCE = 100;
     private boolean turnOver;
-    private int balance;
-    private int amountWagered;
+    private double balance;
+    private double amountWagered;
 
     public Player() {
         balance = INITIAL_BALANCE;
@@ -15,7 +15,7 @@ public class Player extends CardHolder {
 
     // MODIFIES: this
     // EFFECTS: places bet of amount, balance is unchanged if amount > balance
-    public void wager(int amount) {
+    public void wager(double amount) {
         if (amount <= balance) {
             balance -= amount;
             amountWagered = amount;
@@ -24,13 +24,13 @@ public class Player extends CardHolder {
 
     // MODIFIES: this
     // EFFECTS: adds amount to player's balance
-    public void addWinnings(int amount) {
+    public void addWinnings(double amount) {
         balance += amount;
         amountWagered = 0;
     }
 
     // EFFECTS: returns player's balance
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
