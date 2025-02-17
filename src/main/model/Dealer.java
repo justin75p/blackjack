@@ -25,5 +25,11 @@ public class Dealer extends CardHolder {
     public void showHiddenCard() {
         cards.add(hiddenCard);
     }
+
+    // MODIFIES: this
+    // EFFECTS: gets a new deck of cards
+    public void resetDeck() {
+        deck = new Deck();
+    }
     
 }
