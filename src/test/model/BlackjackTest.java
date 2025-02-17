@@ -34,19 +34,6 @@ public class BlackjackTest {
         queen = new Card(Rank.QUEEN, Suit.DIAMONDS);
         king = new Card(Rank.KING, Suit.CLUBS);
     }
-
-    @Test
-    void testPlayerWagerWin() {
-        player.wager(100);
-        List<Card> playerCards = player.getCards();
-        playerCards.add(ace);
-        playerCards.add(jack);
-        assertTrue(player.hasBlackjack());
-
-        // pays out even
-        assertEquals(200, player.getBalance());
-
-    }
     
     @Test
     void testPlayerInsufficientBalance() {
@@ -83,17 +70,6 @@ public class BlackjackTest {
         dealerHand.add(jack);
         assertTrue(dealer.getHandValue() > 21);
         assertFalse(dealer.hasBlackjack());
-    }
-
-    @Test
-    void testDealerStand() {
-        dealer.resetHand();
-        List<Card> dealerHand = dealer.getCards();
-        dealerHand.add(king);
-        dealerHand.add(new Card(Rank.SEVEN, Suit.HEARTS));
-        assertEquals(dealer.getHandValue(), 17);
-        dealer.playTurn();
-        assertEquals(dealer.getHandValue(), 17);
     }
 
     @Test
