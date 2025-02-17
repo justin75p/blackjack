@@ -80,7 +80,6 @@ import main.model.Card;
             initializeDealerCards();
             initializePlayerCards();
 
-
             frame.setVisible(true);
         }
 
@@ -191,23 +190,39 @@ import main.model.Card;
                     System.out.println("Error: Unable to load image from " + card.getImageFileName());
                 }
             }
-            if (player.getHandValue() >= 21) {
-                player.setTurnOver();
+            if (player.getHandValue() > 21) {
+                hitButton.setEnabled(false);
+                JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
+                standButton.setEnabled(false);
+                wagerButton.setEnabled(false);
             }
             // Refresh
             gamePanel.revalidate();
             gamePanel.repaint();
         }
 
+        private void determineGameOutcome() {
+            // Player's hand is > dealer's hand OR dealer busts
+            if (player.getHandValue() <= 21 && (player.getHandValue() > dealer.getHandValue()) || dealer.getHandValue() > 21) {
+                player.addWinnings(player.getAmountWagered() * 2);
+                JOptionPane.showMessageDialog(null, "You won the game! You win $" + player.getAmountWagered() * 2 + "!");
+            }
+            // Dealer's hand is > player's hand 
+            else if ((dealer.getHandValue() <= 21 && (dealer.getHandValue() > player.getHandValue()))) {
+                JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
+            }
+            // Player's hand is = dealer's hand
+            else if (dealer.getHandValue() == player.getHandValue()) {
+                player.addWinnings(player.getAmountWagered());
+                JOptionPane.showMessageDialog(null, "Tie game! You get $" + player.getAmountWagered() + " back!");
+            }
+        }
+
         public class HitButtonHandler implements ActionListener {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!player.isTurnOver()) {
-                    dealCard(player);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Your turn is over!");
-                }
+                dealCard(player);
             }
             
         }
@@ -217,13 +232,14 @@ import main.model.Card;
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (player.getHandValue() <= 21) {
-                    player.setTurnOver();
+                    hitButton.setEnabled(false);
+                    standButton.setEnabled(false);
+                    wagerButton.setEnabled(false);
                     while (dealer.getHandValue() < 17) {
                         dealerDrawCard();
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null, "You have already busted!");
                 }
+                determineGameOutcome();
             }
         }
 
