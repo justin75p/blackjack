@@ -30,7 +30,6 @@ public class Player extends CardHolder {
     // EFFECTS: adds amount to player's balance
     public void addWinnings(double amount) {
         balance += amount;
-        amountWagered = 0;
     }
 
     // EFFECTS: returns player's balance
