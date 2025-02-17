@@ -34,7 +34,6 @@ import main.model.Card;
         private JPanel playerCardsPanel;
         private JButton hitButton;
         private JButton standButton;
-        private JButton wagerButton;
         private JTextField betAmountField;
 
         private static final String BACK_CARD_PATH = "data/cards/BACK.png";
@@ -48,6 +47,7 @@ import main.model.Card;
 
             player = new Player();
             dealer = new Dealer();
+            
 
             // Main frame
             frame = new JFrame();
@@ -71,16 +71,15 @@ import main.model.Card;
             playerPanel = new JPanel();
             initializePlayerPanel();
             
-            frame.add(gamePanel);
-
             gamePanel.add(playerPanel, BorderLayout.SOUTH);
             gamePanel.add(playerCardsPanel, BorderLayout.CENTER);
             gamePanel.add(dealerPanel, BorderLayout.NORTH);
 
-            initializeDealerCards();
-            initializePlayerCards();
-
+            frame.add(gamePanel);
             frame.setVisible(true);
+            initializeDealerCards();
+            askWager(player);
+            initializePlayerCards();
         }
 
         private void initializeMainFrame() {
@@ -115,12 +114,6 @@ import main.model.Card;
             standButton.addActionListener(new StandButtonHandler());
             playerPanel.add(standButton);
             playerPanel.add(Box.createHorizontalStrut(10));
-
-            wagerButton = new JButton("Wager");
-            wagerButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
-            wagerButton.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
-            wagerButton.addActionListener(new WagerButtonHandler());
-            playerPanel.add(wagerButton);
         }
 
         private void initializeDealerCards() {
@@ -190,15 +183,15 @@ import main.model.Card;
                     System.out.println("Error: Unable to load image from " + card.getImageFileName());
                 }
             }
+            // Refresh
+            gamePanel.revalidate();
+            gamePanel.repaint();
+            
             if (player.getHandValue() > 21) {
                 hitButton.setEnabled(false);
                 JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
                 standButton.setEnabled(false);
-                wagerButton.setEnabled(false);
             }
-            // Refresh
-            gamePanel.revalidate();
-            gamePanel.repaint();
         }
 
         private void determineGameOutcome() {
@@ -218,6 +211,26 @@ import main.model.Card;
             }
         }
 
+        private void askWager(Player player) {
+            String amount;
+            boolean validInput = false;
+            while (!validInput) {
+                amount = JOptionPane.showInputDialog("Enter your wager amount:");
+                try {
+                    Double.parseDouble(amount);
+                    if (player.wager(Double.parseDouble(amount))) {
+                        validInput = true;
+                        // stub
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Insufficient balance.");
+                    }
+                } catch (Exception n) {
+                    JOptionPane.showMessageDialog(null, "Invalid input. Try again.");
+                }
+
+            }
+        }
+
         public class HitButtonHandler implements ActionListener {
             
             @Override
@@ -234,7 +247,6 @@ import main.model.Card;
                 if (player.getHandValue() <= 21) {
                     hitButton.setEnabled(false);
                     standButton.setEnabled(false);
-                    wagerButton.setEnabled(false);
                     while (dealer.getHandValue() < 17) {
                         dealerDrawCard();
                     }
@@ -243,23 +255,4 @@ import main.model.Card;
             }
         }
 
-        public class WagerButtonHandler implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String amount = JOptionPane.showInputDialog("Enter your wager amount:");
-                try {
-                    Double.parseDouble(amount);
-                } catch (NumberFormatException n) {
-                    JOptionPane.showMessageDialog(null, "Invalid input. Try again.");
-                }
-
-                if (player.wager(Double.parseDouble(amount))) {
-                    // stub
-                } else {
-                    JOptionPane.showMessageDialog(null, "Insufficient balance.");
-                }
-            }
-            
-        }
     }
