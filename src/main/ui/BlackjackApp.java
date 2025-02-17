@@ -34,6 +34,7 @@ import main.model.Card;
         private JPanel playerCardsPanel;
         private JButton hitButton;
         private JButton standButton;
+        private JButton nextGameButton;
         private JTextField betAmountField;
 
         private static final String BACK_CARD_PATH = "data/cards/BACK.png";
@@ -114,6 +115,14 @@ import main.model.Card;
             standButton.addActionListener(new StandButtonHandler());
             playerPanel.add(standButton);
             playerPanel.add(Box.createHorizontalStrut(10));
+
+            nextGameButton = new JButton("Next Game");
+            nextGameButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+            nextGameButton.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
+            nextGameButton.addActionListener(new NextGameButtonHandler());
+            nextGameButton.setEnabled(false);
+            playerPanel.add(nextGameButton);
+            playerPanel.add(Box.createHorizontalStrut(10));
         }
 
         private void initializeDealerCards() {
@@ -191,6 +200,7 @@ import main.model.Card;
                 hitButton.setEnabled(false);
                 JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
                 standButton.setEnabled(false);
+                nextGameButton.setEnabled(true);
             }
         }
 
@@ -209,6 +219,8 @@ import main.model.Card;
                 player.addWinnings(player.getAmountWagered());
                 JOptionPane.showMessageDialog(null, "Tie game! You get $" + player.getAmountWagered() + " back!");
             }
+
+            nextGameButton.setEnabled(true);
         }
 
         private void askWager(Player player) {
@@ -253,6 +265,32 @@ import main.model.Card;
                 }
                 determineGameOutcome();
             }
+        }
+
+        public class NextGameButtonHandler implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                player.resetHand();
+                dealer.resetHand();
+                dealer.resetDeck();
+
+                dealerPanel.removeAll();
+                playerCardsPanel.removeAll();
+                initializeDealerCards();
+
+                gamePanel.revalidate();
+                gamePanel.repaint();
+
+                hitButton.setEnabled(true);
+                standButton.setEnabled(true);
+
+                nextGameButton.setEnabled(false);
+
+                askWager(player);
+                initializePlayerCards();
+            }
+            
         }
 
     }
