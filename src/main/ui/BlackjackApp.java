@@ -2,6 +2,7 @@ package main.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import main.model.Card;
 import main.model.Dealer;
@@ -29,12 +31,14 @@ public class BlackjackApp {
     private JPanel dealerPanel;
     private JPanel playerPanel;
     private JPanel playerCardsPanel;
+    private JPanel buttonPanel;
     private JButton hitButton;
     private JButton standButton;
     private JButton nextGameButton;
+    private JLabel balanceLabel;
 
     private static final String BACK_CARD_PATH = "data/cards/BACK.png";
-    private static final int CARD_HEIGHT = 150;
+    private static final int CARD_HEIGHT = 175;
     private static final int CARD_WIDTH = 125;
 
     private Dealer dealer;
@@ -61,10 +65,11 @@ public class BlackjackApp {
         // Panel containing the player's cards
         playerCardsPanel = new JPanel();
         playerCardsPanel.setBackground(new Color(53, 101, 77));
-        playerCardsPanel.setBorder(BorderFactory.createEmptyBorder(75, 0, 0, 0));
+        playerCardsPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
 
-        // Player panel containing buttons and bet amount field
-        playerPanel = new JPanel();
+        // Player panel containing buttons and balance field
+        playerPanel = new JPanel(new BorderLayout());
+        balanceLabel = new JLabel("Balance: $" + player.getBalance(), JLabel.CENTER);
         initializePlayerPanel();
 
         gamePanel.add(playerPanel, BorderLayout.SOUTH);
@@ -78,6 +83,7 @@ public class BlackjackApp {
         initializePlayerCards();
     }
 
+    // Helper method to initialize the main frame
     private void initializeMainFrame() {
         frame.setTitle("Blackjack");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,38 +93,50 @@ public class BlackjackApp {
         frame.setResizable(false);
     }
 
+    // Helper method to initialize the game panel
     private void initializeGamePanel() {
         gamePanel.setLayout(new BorderLayout());
         gamePanel.setBackground(new Color(53, 101, 77));
     }
 
+    // Helper method to initialize the player panel containing the buttons
     private void initializePlayerPanel() {
 
-        playerPanel.setBackground(Color.DARK_GRAY);
+        balanceLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        balanceLabel.setForeground(Color.WHITE);
+        balanceLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        balanceLabel.setOpaque(true);   
+        balanceLabel.setBackground(new Color(53, 101, 77));
+
+        buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.DARK_GRAY);
 
         hitButton = new JButton("Hit");
         hitButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
         hitButton.setBorder(BorderFactory.createEmptyBorder(10, 55, 10, 55));
         hitButton.addActionListener(new HitButtonHandler());
-        playerPanel.add(hitButton);
-        playerPanel.add(Box.createHorizontalStrut(10));
+        buttonPanel.add(hitButton);
+        buttonPanel.add(Box.createHorizontalStrut(10));
 
         standButton = new JButton("Stand");
         standButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
         standButton.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
         standButton.addActionListener(new StandButtonHandler());
-        playerPanel.add(standButton);
-        playerPanel.add(Box.createHorizontalStrut(10));
+        buttonPanel.add(standButton);
+        buttonPanel.add(Box.createHorizontalStrut(10));
 
         nextGameButton = new JButton("Next Game");
         nextGameButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
         nextGameButton.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
         nextGameButton.addActionListener(new NextGameButtonHandler());
         nextGameButton.setEnabled(false);
-        playerPanel.add(nextGameButton);
-        playerPanel.add(Box.createHorizontalStrut(10));
+        buttonPanel.add(nextGameButton);
+
+        playerPanel.add(buttonPanel, BorderLayout.CENTER);
+        playerPanel.add(balanceLabel, BorderLayout.NORTH);
     }
 
+    // Helper method to initialize the dealer's cards
     private void initializeDealerCards() {
 
         try {
@@ -164,6 +182,7 @@ public class BlackjackApp {
         gamePanel.repaint();
     }
 
+    // Helper method to initialize the initial two player's cards
     private void initializePlayerCards() {
         dealCard(player);
         dealCard(player);
@@ -201,6 +220,7 @@ public class BlackjackApp {
         else if (player.getHandValue() > 21) {
             hitButton.setEnabled(false);
             JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
+            balanceLabel.setText("Balance: $" + player.getBalance());
             standButton.setEnabled(false);
             nextGameButton.setEnabled(true);
         }
@@ -210,6 +230,7 @@ public class BlackjackApp {
         }
     }
 
+    // Helper method that determines the outcome of the game depending on the situation
     private void determineGameOutcome() {
         hitButton.setEnabled(false);
         standButton.setEnabled(false);
@@ -217,6 +238,7 @@ public class BlackjackApp {
         // Five-Card Charlie Rule: player wins if they have 5 cards that have value < 21
         if (player.getHandValue() < 21 && player.getCards().size() == 5) {
             player.addWinnings(player.getAmountWagered() * 2);
+            balanceLabel.setText("Balance: $" + player.getBalance());
             JOptionPane.showMessageDialog(null,
                     "Five-Card Charlie Rule! You win $" + player.getAmountWagered() * 2 + "!");
         }
@@ -224,21 +246,25 @@ public class BlackjackApp {
         else if ((player.getHandValue() <= 21 && (player.getHandValue() > dealer.getHandValue()))
                 || dealer.getHandValue() > 21) {
             player.addWinnings(player.getAmountWagered() * 2);
+            balanceLabel.setText("Balance: $" + player.getBalance());
             JOptionPane.showMessageDialog(null, "You won the game! You win $" + player.getAmountWagered() * 2 + "!");
         }
         // Dealer's hand is > player's hand
         else if ((dealer.getHandValue() <= 21 && (dealer.getHandValue() > player.getHandValue()))) {
             JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
+            balanceLabel.setText("Balance: $" + player.getBalance());
         }
         // Player's hand is = dealer's hand
         else if (dealer.getHandValue() == player.getHandValue()) {
             player.addWinnings(player.getAmountWagered());
+            balanceLabel.setText("Balance: $" + player.getBalance());
             JOptionPane.showMessageDialog(null, "Tie game! You get $" + player.getAmountWagered() + " back!");
         }
 
         nextGameButton.setEnabled(true);
     }
 
+    // Helper method that prompts the player how much they would like to wager
     private void askWager(Player player) {
         String amount;
         boolean validInput = false;
@@ -248,7 +274,7 @@ public class BlackjackApp {
                 Double.parseDouble(amount);
                 if (player.wager(Double.parseDouble(amount))) {
                     validInput = true;
-                    // stub
+                    balanceLabel.setText("Balance: $" + player.getBalance());
                 } else {
                     JOptionPane.showMessageDialog(null, "Insufficient balance.");
                 }
@@ -257,6 +283,7 @@ public class BlackjackApp {
             }
 
         }
+
     }
 
     public class HitButtonHandler implements ActionListener {
