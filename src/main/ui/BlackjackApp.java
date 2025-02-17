@@ -219,9 +219,9 @@ public class BlackjackApp {
         // Player busts
         else if (player.getHandValue() > 21) {
             hitButton.setEnabled(false);
+            standButton.setEnabled(false);
             JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
             balanceLabel.setText("Balance: $" + player.getBalance());
-            standButton.setEnabled(false);
             nextGameButton.setEnabled(true);
         }
         // Five-Card Charlie Rule
@@ -299,9 +299,11 @@ public class BlackjackApp {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (player.getHandValue() <= 21) {
-                while (dealer.getHandValue() < 17) {
-                    dealerDrawCard();
+            while (dealer.getHandValue() < 17) {
+                dealerDrawCard();
+                if (dealer.getHandValue() > player.getHandValue()) {
+                    determineGameOutcome();
+                    return;
                 }
             }
             determineGameOutcome();
