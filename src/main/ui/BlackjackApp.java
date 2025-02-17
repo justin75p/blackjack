@@ -18,9 +18,6 @@
     import javax.swing.JLabel;
     import javax.swing.JOptionPane;
     import javax.swing.JPanel;
-    import javax.swing.JTextArea;
-    import javax.swing.JTextField;
-    import javax.swing.border.Border;
 
 import main.model.Card;
     import main.model.Dealer;
@@ -35,7 +32,6 @@ import main.model.Card;
         private JButton hitButton;
         private JButton standButton;
         private JButton nextGameButton;
-        private JTextField betAmountField;
 
         private static final String BACK_CARD_PATH = "data/cards/BACK.png";
         private static final int CARD_HEIGHT = 150;
@@ -86,7 +82,6 @@ import main.model.Card;
         private void initializeMainFrame() {
             frame.setTitle("Blackjack");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
             frame.pack();
             frame.setSize(900, 600);
             frame.setLocationRelativeTo(null);
@@ -195,18 +190,38 @@ import main.model.Card;
             // Refresh
             gamePanel.revalidate();
             gamePanel.repaint();
-            
-            if (player.getHandValue() > 21) {
+
+            // Player gets 21
+            if (player.getHandValue() == 21) {
+                while (dealer.getHandValue() < 17) {
+                    dealerDrawCard();
+                }
+                determineGameOutcome();
+            }
+            // Player busts
+            else if (player.getHandValue() > 21) {
                 hitButton.setEnabled(false);
                 JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
                 standButton.setEnabled(false);
                 nextGameButton.setEnabled(true);
             }
+            // Five-Card Charlie Rule
+            else if (player.getHandValue() < 21 && player.getCards().size() == 5) {
+                determineGameOutcome();
+            }
         }
 
         private void determineGameOutcome() {
+            hitButton.setEnabled(false);
+            standButton.setEnabled(false);
+
+            // Five-Card Charlie Rule: player wins if they have 5 cards that have value < 21
+            if (player.getHandValue() < 21 && player.getCards().size() == 5) {
+                player.addWinnings(player.getAmountWagered() * 2);
+                JOptionPane.showMessageDialog(null, "Five-Card Charlie Rule! You win $" + player.getAmountWagered() * 2 + "!");
+            }
             // Player's hand is > dealer's hand OR dealer busts
-            if (player.getHandValue() <= 21 && (player.getHandValue() > dealer.getHandValue()) || dealer.getHandValue() > 21) {
+            else if ((player.getHandValue() <= 21 && (player.getHandValue() > dealer.getHandValue())) || dealer.getHandValue() > 21) {
                 player.addWinnings(player.getAmountWagered() * 2);
                 JOptionPane.showMessageDialog(null, "You won the game! You win $" + player.getAmountWagered() * 2 + "!");
             }
@@ -257,8 +272,6 @@ import main.model.Card;
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (player.getHandValue() <= 21) {
-                    hitButton.setEnabled(false);
-                    standButton.setEnabled(false);
                     while (dealer.getHandValue() < 17) {
                         dealerDrawCard();
                     }
