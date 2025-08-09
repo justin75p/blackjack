@@ -1,7 +1,10 @@
 package main.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.Insets;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,17 +43,25 @@ public class WelcomeScreen {
     }
 
     private void initializeWelcomePanel() {
-        titleLabel = new JLabel("Blackjack");
+        titleLabel = new JLabel("BLACKJACK");
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 48));
 
         welcomePanel.add(titleLabel, BorderLayout.NORTH);
     }
 
     private void initializeButtonPanel() {
-        singleplayerButton = new JButton("Singleplayer");
-        multiplayerButton = new JButton("Multiplayer");
+        singleplayerButton = new JButton("SINGLEPLAYER");
+        singleplayerButton.setFont(new Font("Serif", Font.BOLD, 18));
+        singleplayerButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+        singleplayerButton.setMargin(new Insets(10, 50, 10, 50));
+        multiplayerButton = new JButton("MULTIPLAYER");
+        multiplayerButton.setFont(new Font("Serif", Font.BOLD, 18));
+        multiplayerButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+        multiplayerButton.setMargin(new Insets(10, 50, 10, 50));
 
         buttonPanel.add(singleplayerButton);
         buttonPanel.add(multiplayerButton);
-        welcomePanel.add(buttonPanel, BorderLayout.CENTER);
+        welcomePanel.add(buttonPanel, BorderLayout.SOUTH);
     }
 }
