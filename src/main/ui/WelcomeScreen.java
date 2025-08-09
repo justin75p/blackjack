@@ -54,7 +54,7 @@ public class WelcomeScreen {
         frame.setTitle("Blackjack");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setSize(600, 500);
+        frame.setSize(750, 500);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
     }
