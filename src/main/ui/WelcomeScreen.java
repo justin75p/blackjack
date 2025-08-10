@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -75,14 +77,35 @@ public class WelcomeScreen {
         singleplayerButton.setFont(new Font("Serif", Font.BOLD, 18));
         singleplayerButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
         singleplayerButton.setMargin(new Insets(10, 50, 10, 50));
+        singleplayerButton.addActionListener(new SingleplayerButtonHandler());
 
         multiplayerButton = new JButton("MULTIPLAYER");
         multiplayerButton.setFont(new Font("Serif", Font.BOLD, 18));
         multiplayerButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
         multiplayerButton.setMargin(new Insets(10, 50, 10, 50));
-
+        multiplayerButton.addActionListener(new MultiplayerButtonHandler());
+        
         buttonPanel.add(singleplayerButton);
         buttonPanel.add(multiplayerButton);
         welcomePanel.add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    public class MultiplayerButtonHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            frame.dispose();
+            MultiplayerBlackjack multiplayerBlackjack = new MultiplayerBlackjack();
+        }
+        
+    }
+    public class SingleplayerButtonHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            frame.dispose();
+            BlackjackApp blackjack = new BlackjackApp();
+        }
+        
     }
 }
