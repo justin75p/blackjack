@@ -38,8 +38,8 @@ public class MultiplayerBlackjack {
     private JLabel balanceLabel;
 
     private static final String BACK_CARD_PATH = "data/cards/BACK.png";
-    private static final int CARD_HEIGHT = 175;
-    private static final int CARD_WIDTH = 125;
+    private static final int CARD_HEIGHT = 150;
+    private static final int CARD_WIDTH = 100;
 
     private Dealer dealer;
     private Player player;
@@ -65,7 +65,7 @@ public class MultiplayerBlackjack {
         // Panel containing the player's cards
         playerCardsPanel = new JPanel();
         playerCardsPanel.setBackground(new Color(53, 101, 77));
-        playerCardsPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
+        playerCardsPanel.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
 
         // Player panel containing buttons and balance field
         playerPanel = new JPanel(new BorderLayout());
@@ -88,7 +88,7 @@ public class MultiplayerBlackjack {
         frame.setTitle("Blackjack");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setSize(900, 600);
+        frame.setSize(1200, 800);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
     }
