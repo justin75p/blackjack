@@ -38,8 +38,8 @@ public class MultiplayerBlackjack {
     private JLabel balanceLabel;
 
     private static final String BACK_CARD_PATH = "data/cards/BACK.png";
-    private static final int CARD_HEIGHT = 150;
-    private static final int CARD_WIDTH = 100;
+    private static final int CARD_HEIGHT = 175;
+    private static final int CARD_WIDTH = 125;
 
     private Dealer dealer;
     private Player player;
@@ -64,8 +64,8 @@ public class MultiplayerBlackjack {
 
         // Panel containing the player's cards
         playerCardsPanel = new JPanel();
+        playerCardsPanel.setLayout(null);
         playerCardsPanel.setBackground(new Color(53, 101, 77));
-        playerCardsPanel.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
 
         // Player panel containing buttons and balance field
         playerPanel = new JPanel(new BorderLayout());
@@ -192,14 +192,16 @@ public class MultiplayerBlackjack {
     private void dealCard(Player player) {
         playerCardsPanel.removeAll();
         dealer.deal(player);
-        for (Card card : player.getCards()) {
+        for (int i = 0; i < player.getCards().size(); i++) {
+            Card card = player.getCards().get(i);
             BufferedImage image;
             try {
                 image = ImageIO.read(new File(card.getImageFileName()));
                 Image scaledImage = image.getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
                 ImageIcon cardIcon = new ImageIcon(scaledImage);
                 JLabel cardLabel = new JLabel(cardIcon);
-                playerCardsPanel.add(cardLabel);
+                cardLabel.setBounds(50, 50 + (i * 50), CARD_WIDTH, CARD_HEIGHT);
+                playerCardsPanel.add(cardLabel, 0);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Error: Unable to load image from " + card.getImageFileName());
