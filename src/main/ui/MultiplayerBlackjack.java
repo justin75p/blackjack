@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -41,12 +43,21 @@ public class MultiplayerBlackjack {
     private static final int CARD_HEIGHT = 175;
     private static final int CARD_WIDTH = 125;
 
+    private int numPlayers;
+    private int currentPlayerIndex = 0;
+
     private Dealer dealer;
-    private Player player;
+    private List<Player> players;
 
-    public MultiplayerBlackjack() {
+    public MultiplayerBlackjack(int numPlayers) {
 
-        player = new Player();
+        this.numPlayers = numPlayers;
+        players = new ArrayList<>();
+
+        for (int i = 0; i < numPlayers; i++) {
+            players.add(new Player());
+        }
+
         dealer = new Dealer();
 
         // Main frame
