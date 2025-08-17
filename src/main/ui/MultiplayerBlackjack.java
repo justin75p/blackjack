@@ -45,7 +45,7 @@
         private static final int CARD_WIDTH = 125;
 
         private int numPlayers;
-        private int currentPlayerIndex = 0;
+        private int currentPlayerTurn = 0;
 
         private Dealer dealer;
         private List<Player> players;
@@ -82,7 +82,7 @@
 
             // Player panel containing buttons and balance field
             playerPanel = new JPanel(new BorderLayout());
-            balanceLabel = new JLabel("Balance: $" + players.get(currentPlayerIndex).getBalance(), JLabel.CENTER);
+            balanceLabel = new JLabel("Player " + (currentPlayerTurn + 1) + " Balance: $" + players.get(currentPlayerTurn).getBalance(), JLabel.CENTER);
             initializePlayerPanel();
 
             gamePanel.add(playerPanel, BorderLayout.SOUTH);
@@ -263,7 +263,7 @@
                 hitButton.setEnabled(false);
                 standButton.setEnabled(false);
                 JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
-                balanceLabel.setText("Balance: $" + player.getBalance());
+                balanceLabel.setText("Player " + (playerIndex + 1) + " Balance: $" + player.getBalance());
                 nextGameButton.setEnabled(true);
             }
             // Five-Card Charlie Rule
@@ -274,7 +274,7 @@
 
         // Helper method that determines the outcome of the game depending on the situation
         private void determineGameOutcome() {
-            Player currentPlayer = players.get(currentPlayerIndex);
+            Player currentPlayer = players.get(currentPlayerTurn);
 
             hitButton.setEnabled(false);
             standButton.setEnabled(false);
@@ -282,7 +282,7 @@
             // Five-Card Charlie Rule: player wins if they have 5 cards that have value < 21
             if (currentPlayer.getHandValue() < 21 && currentPlayer.getCards().size() == 5) {
                 currentPlayer.addWinnings(currentPlayer.getAmountWagered() * 2);
-                balanceLabel.setText("Balance: $" + currentPlayer.getBalance());
+                balanceLabel.setText("Player " + (currentPlayerTurn + 1) + " Balance: $" + currentPlayer.getBalance());
                 JOptionPane.showMessageDialog(null,
                         "Five-Card Charlie Rule! You win $" + currentPlayer.getAmountWagered() * 2 + "!");
             }
@@ -290,18 +290,18 @@
             else if ((currentPlayer.getHandValue() <= 21 && (currentPlayer.getHandValue() > dealer.getHandValue()))
                     || dealer.getHandValue() > 21) {
                         currentPlayer.addWinnings(currentPlayer.getAmountWagered() * 2);
-                balanceLabel.setText("Balance: $" + currentPlayer.getBalance());
+                        balanceLabel.setText("Player " + (currentPlayerTurn + 1) + " Balance: $" + currentPlayer.getBalance());
                 JOptionPane.showMessageDialog(null, "You won the game! You win $" + currentPlayer.getAmountWagered() * 2 + "!");
             }
             // Dealer's hand is > player's hand
             else if ((dealer.getHandValue() <= 21 && (dealer.getHandValue() > currentPlayer.getHandValue()))) {
                 JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + currentPlayer.getAmountWagered() + "!");
-                balanceLabel.setText("Balance: $" + currentPlayer.getBalance());
+                balanceLabel.setText("Player " + (currentPlayerTurn + 1) + " Balance: $" + currentPlayer.getBalance());
             }
             // Player's hand is = dealer's hand
             else if (dealer.getHandValue() == currentPlayer.getHandValue()) {
                 currentPlayer.addWinnings(currentPlayer.getAmountWagered());
-                balanceLabel.setText("Balance: $" + currentPlayer.getBalance());
+                balanceLabel.setText("Player " + (currentPlayerTurn + 1) + " Balance: $" + currentPlayer.getBalance());
                 JOptionPane.showMessageDialog(null, "Tie game! You get $" + currentPlayer.getAmountWagered() + " back!");
             }
 
@@ -313,12 +313,13 @@
             String amount;
             boolean validInput = false;
             while (!validInput) {
+                balanceLabel.setText("Player " + (playerNumber) + " Balance: $" + player.getBalance());
                 amount = JOptionPane.showInputDialog("Enter your wager amount, Player " + playerNumber + ":");
                 try {
                     Double.parseDouble(amount);
                     if (player.wager(Double.parseDouble(amount))) {
                         validInput = true;
-                        balanceLabel.setText("Balance: $" + player.getBalance());
+                        balanceLabel.setText("Player " + (playerNumber) + " Balance: $" + player.getBalance());
                     } else {
                         JOptionPane.showMessageDialog(null, "Insufficient balance.");
                     }
@@ -334,7 +335,7 @@
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Player currentPlayer = players.get(currentPlayerIndex);
+                Player currentPlayer = players.get(currentPlayerTurn);
                 dealCard(currentPlayer);
             }
 
@@ -344,7 +345,7 @@
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Player currentPlayer = players.get(currentPlayerIndex);
+                Player currentPlayer = players.get(currentPlayerTurn);
 
                 while (dealer.getHandValue() < 17) {
                     dealerDrawCard();
