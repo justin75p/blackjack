@@ -361,26 +361,26 @@
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Player currentPlayer = players.get(currentPlayerIndex);
+                // Player currentPlayer = players.get(currentPlayerIndex);
 
-                currentPlayer.resetHand();
-                dealer.resetHand();
-                dealer.resetDeck();
+                // currentPlayer.resetHand();
+                // dealer.resetHand();
+                // dealer.resetDeck();
 
-                dealerPanel.removeAll();
-                playerCardsPanels.get(currentPlayerIndex).removeAll();
-                initializeDealerCards();
+                // dealerPanel.removeAll();
+                // playerCardsPanels.get(currentPlayerIndex).removeAll();
+                // initializeDealerCards();
 
-                gamePanel.revalidate();
-                gamePanel.repaint();
+                // gamePanel.revalidate();
+                // gamePanel.repaint();
 
-                hitButton.setEnabled(true);
-                standButton.setEnabled(true);
+                // hitButton.setEnabled(true);
+                // standButton.setEnabled(true);
 
-                nextGameButton.setEnabled(false);
+                // nextGameButton.setEnabled(false);
 
-                askWager(currentPlayer);
-                initializePlayerCards();
+                // askWager(currentPlayer);
+                // initializePlayerCards();
             }
 
         }
