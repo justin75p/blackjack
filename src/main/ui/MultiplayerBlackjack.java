@@ -32,7 +32,7 @@ public class MultiplayerBlackjack {
     private JPanel gamePanel;
     private JPanel dealerPanel;
     private JPanel playerPanel;
-    private JPanel playerCardsPanel;
+    private List<JPanel> playerCardsPanel;
     private JPanel buttonPanel;
     private JButton hitButton;
     private JButton standButton;
@@ -53,9 +53,15 @@ public class MultiplayerBlackjack {
 
         this.numPlayers = numPlayers;
         players = new ArrayList<>();
+        playerCardsPanel = new ArrayList<>();
 
         for (int i = 0; i < numPlayers; i++) {
             players.add(new Player());
+            // Panels containing each player's cards
+            JPanel playerCards = new JPanel();
+            playerCards.setLayout(null);
+            playerCards.setBackground(new Color(53, 101, 77));
+            playerCardsPanel.add(playerCards);
         }
 
         dealer = new Dealer();
@@ -73,24 +79,27 @@ public class MultiplayerBlackjack {
         dealerPanel.setBackground(new Color(53, 101, 77));
         dealerPanel.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
 
-        // Panel containing the player's cards
-        playerCardsPanel = new JPanel();
-        playerCardsPanel.setLayout(null);
-        playerCardsPanel.setBackground(new Color(53, 101, 77));
-
         // Player panel containing buttons and balance field
         playerPanel = new JPanel(new BorderLayout());
-        balanceLabel = new JLabel("Balance: $" + player.getBalance(), JLabel.CENTER);
+        balanceLabel = new JLabel("Balance: $" + players.get(currentPlayerIndex).getBalance(), JLabel.CENTER);
         initializePlayerPanel();
 
         gamePanel.add(playerPanel, BorderLayout.SOUTH);
-        gamePanel.add(playerCardsPanel, BorderLayout.CENTER);
+
+        // Combine all player card panels into one, then add to the main game panel
+        JPanel allPlayerCardsPanel = new JPanel();
+        allPlayerCardsPanel.setBackground(new Color(53, 101, 77));
+        for (JPanel playerCards : playerCardsPanel) {
+            allPlayerCardsPanel.add(playerCards);
+        }
+        gamePanel.add(allPlayerCardsPanel, BorderLayout.CENTER);
+
         gamePanel.add(dealerPanel, BorderLayout.NORTH);
 
         frame.add(gamePanel);
         frame.setVisible(true);
         initializeDealerCards();
-        askWager(player);
+        askWager(players.get(currentPlayerIndex));
         initializePlayerCards();
     }
 
