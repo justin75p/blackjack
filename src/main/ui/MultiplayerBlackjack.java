@@ -99,7 +99,7 @@
             frame.setVisible(true);
             initializeDealerCards();
             for (int i = 0; i < numPlayers; i++) {
-                askWager(players.get(i));
+                askWager(players.get(i), i + 1);
             }
             initializePlayerCards();
         }
@@ -309,11 +309,11 @@
         }
 
         // Helper method that prompts the player how much they would like to wager
-        private void askWager(Player player) {
+        private void askWager(Player player, int playerNumber) {
             String amount;
             boolean validInput = false;
             while (!validInput) {
-                amount = JOptionPane.showInputDialog("Enter your wager amount:");
+                amount = JOptionPane.showInputDialog("Enter your wager amount, Player " + playerNumber + ":");
                 try {
                     Double.parseDouble(amount);
                     if (player.wager(Double.parseDouble(amount))) {
