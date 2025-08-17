@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class WelcomeScreen {
@@ -94,8 +95,18 @@ public class WelcomeScreen {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            frame.dispose();
-            MultiplayerBlackjack multiplayerBlackjack = new MultiplayerBlackjack();
+            String input = JOptionPane.showInputDialog("How many players would you like to play with? (2-5)");
+            try {
+                int numPlayers = Integer.parseInt(input);
+                if (numPlayers >= 2 && numPlayers <= 5) {
+                    frame.dispose();
+                    MultiplayerBlackjack multiplayerBlackjack = new MultiplayerBlackjack(numPlayers);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please enter 2-5 players.");
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Invalid input.");
+            }
         }
         
     }
