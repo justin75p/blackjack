@@ -243,7 +243,7 @@
             allPlayerCardsPanel.setLayout(null);
 
             int playerWidth = 200;
-            int playerHeight = 300;
+            int playerHeight = 500;
             int startX = (1200 - (numPlayers * playerWidth)) / 2;
             
             for (int i = 0; i < playerCardsPanels.size(); i++) {
