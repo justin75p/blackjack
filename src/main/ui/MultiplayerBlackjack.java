@@ -310,6 +310,8 @@
 
         // Helper method that shows the results of all players
         private void determineGameOutcome() {
+            hitButton.setEnabled(false);
+            standButton.setEnabled(false);
 
             StringBuilder results = new StringBuilder("Game Results:\n");
 
