@@ -284,11 +284,11 @@
             }
             // Player busts
             else if (player.getHandValue() > 21) {
-                endPlayerTurn(player, "Player " + (playerIndex + 1) + " busts! $" + player.getAmountWagered() + " lost!");
+                endPlayerTurn(player, "Player " + (playerIndex + 1) + " busts!");
             }
             // Five-Card Charlie Rule
             else if (player.getHandValue() < 21 && player.getCards().size() == 5) {
-                endPlayerTurn(player, "Five Card Charlie! Player " + (playerIndex + 1) + " wins $" + player.getAmountWagered() + "!");
+                endPlayerTurn(player, "Five Card Charlie! Player " + (playerIndex + 1) + " wins!");
             }
         }
 
@@ -331,27 +331,27 @@
             int playerIndex = players.indexOf(player);
 
             if (player.getHandValue() > 21) {
-                outcome = "Player " + (playerIndex + 1) + ": Busts, lost " + player.getAmountWagered();
+                outcome = "Player " + (playerIndex + 1) + ": Busts, lost $" + player.getAmountWagered();
             }
             // Five-Card Charlie Rule: player wins if they have 5 cards that have value < 21
             else if (player.getHandValue() < 21 && player.getCards().size() == 5) {
                 player.addWinnings(player.getAmountWagered() * 2);
-                outcome = "Player " + (playerIndex + 1) + ": Five Card Charlie, won " + player.getAmountWagered() * 2;
+                outcome = "Player " + (playerIndex + 1) + ": Five Card Charlie, won $" + player.getAmountWagered() * 2;
             }
             // Player's hand is > dealer's hand OR dealer busts
             else if ((player.getHandValue() <= 21 && (player.getHandValue() > dealer.getHandValue()))
                     || dealer.getHandValue() > 21) {
                 player.addWinnings(player.getAmountWagered() * 2);
-                outcome = "Player " + (playerIndex + 1) + ": WON, won " + player.getAmountWagered() * 2;
+                outcome = "Player " + (playerIndex + 1) + ": WON, won $" + player.getAmountWagered() * 2;
             }
             // Dealer's hand is > player's hand 
             else if ((dealer.getHandValue() <= 21 && (dealer.getHandValue() > player.getHandValue()))) {
-                outcome = "Player " + (playerIndex + 1) + ": LOST, lost " + player.getAmountWagered();
+                outcome = "Player " + (playerIndex + 1) + ": LOST, lost $" + player.getAmountWagered();
             }
             // Player's hand is = dealer's hand
             else if (dealer.getHandValue() == player.getHandValue()) {
                 player.addWinnings(player.getAmountWagered());
-                outcome = "Player " + (playerIndex + 1) + ": TIE, made back " + player.getAmountWagered();
+                outcome = "Player " + (playerIndex + 1) + ": TIE, made back $" + player.getAmountWagered();
             }
             return outcome;
         }
@@ -429,26 +429,32 @@
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Player currentPlayer = players.get(currentPlayerIndex);
 
-                // currentPlayer.resetHand();
-                // dealer.resetHand();
-                // dealer.resetDeck();
+                currentPlayerTurn = 0;
 
-                // dealerPanel.removeAll();
-                // playerCardsPanels.get(currentPlayerIndex).removeAll();
-                // initializeDealerCards();
+                for (Player player : players) {
+                    player.resetHand();
+                    playerCardsPanels.get(players.indexOf(player)).removeAll();
+                }
+                dealer.resetHand();
+                dealer.resetDeck();
 
-                // gamePanel.revalidate();
-                // gamePanel.repaint();
+                dealerPanel.removeAll();
+                initializeDealerCards();
 
-                // hitButton.setEnabled(true);
-                // standButton.setEnabled(true);
+                gamePanel.revalidate();
+                gamePanel.repaint();
 
-                // nextGameButton.setEnabled(false);
+                hitButton.setEnabled(true);
+                standButton.setEnabled(true);
+                nextGameButton.setEnabled(false);
 
-                // askWager(currentPlayer);
-                // initializePlayerCards();
+                currentPlayerTurnLabel.setText("Your turn, Player " + (currentPlayerTurn + 1));
+
+                for (int i = 0; i < numPlayers; i++) {
+                    askWager(players.get(i), i + 1);
+                }
+                initializePlayerCards();
             }
 
         }
