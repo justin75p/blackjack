@@ -280,59 +280,78 @@
 
             // Player gets 21
             if (player.getHandValue() == 21) {
-                while (dealer.getHandValue() < 17) {
-                    dealerDrawCard();
-                }
-                determineGameOutcome();
+                endPlayerTurn(player, null);
             }
             // Player busts
             else if (player.getHandValue() > 21) {
-                hitButton.setEnabled(false);
-                standButton.setEnabled(false);
-                JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
-                balanceLabel.setText(formatAllPlayerBalances());
-                nextGameButton.setEnabled(true);
+                endPlayerTurn(player, "Player " + (playerIndex + 1) + " busts! $" + player.getAmountWagered() + " lost!");
             }
             // Five-Card Charlie Rule
             else if (player.getHandValue() < 21 && player.getCards().size() == 5) {
-                determineGameOutcome();
+                endPlayerTurn(player, "Five Card Charlie! Player " + (playerIndex + 1) + " wins $" + player.getAmountWagered() + "!");
             }
         }
 
-        // Helper method that determines the outcome of the game depending on the situation
+        // Method that is called when a player's turn ends
+        private void endPlayerTurn(Player player, String message) {
+            if (message != null) {
+                JOptionPane.showMessageDialog(null, message);
+            }
+
+            currentPlayerTurn++;
+            if (currentPlayerTurn == numPlayers) {
+                hitButton.setEnabled(false);
+                standButton.setEnabled(false);
+                playDealerTurn();
+            } else {
+                currentPlayerTurnLabel.setText("Your turn, Player " + (currentPlayerTurn + 1));
+            }
+        }
+
+        // Helper method that shows the results of all players
         private void determineGameOutcome() {
-            Player currentPlayer = players.get(currentPlayerTurn);
 
-            hitButton.setEnabled(false);
-            standButton.setEnabled(false);
+            StringBuilder results = new StringBuilder("Game Results:\n");
 
+            for (int i = 0; i < numPlayers; i++) {
+                Player player = players.get(i);
+                results.append(determinePlayerOutcome(player)).append("\n");
+            }
+
+            balanceLabel.setText(formatAllPlayerBalances());
+            JOptionPane.showMessageDialog(null, results.toString());
+            nextGameButton.setEnabled(true);
+        }
+
+        // Helper method that determines the outcome of a singular player
+        private String determinePlayerOutcome(Player player) {
+            String outcome = "";
+            int playerIndex = players.indexOf(player);
+
+            if (player.getHandValue() > 21) {
+                outcome = "Player " + (playerIndex + 1) + ": Busts, lost " + player.getAmountWagered();
+            }
             // Five-Card Charlie Rule: player wins if they have 5 cards that have value < 21
-            if (currentPlayer.getHandValue() < 21 && currentPlayer.getCards().size() == 5) {
-                currentPlayer.addWinnings(currentPlayer.getAmountWagered() * 2);
-                balanceLabel.setText(formatAllPlayerBalances());
-                JOptionPane.showMessageDialog(null,
-                        "Five-Card Charlie Rule! You win $" + currentPlayer.getAmountWagered() * 2 + "!");
+            else if (player.getHandValue() < 21 && player.getCards().size() == 5) {
+                player.addWinnings(player.getAmountWagered() * 2);
+                outcome = "Player " + (playerIndex + 1) + ": Five Card Charlie, won " + player.getAmountWagered() * 2;
             }
             // Player's hand is > dealer's hand OR dealer busts
-            else if ((currentPlayer.getHandValue() <= 21 && (currentPlayer.getHandValue() > dealer.getHandValue()))
+            else if ((player.getHandValue() <= 21 && (player.getHandValue() > dealer.getHandValue()))
                     || dealer.getHandValue() > 21) {
-                        currentPlayer.addWinnings(currentPlayer.getAmountWagered() * 2);
-                        balanceLabel.setText(formatAllPlayerBalances());
-                JOptionPane.showMessageDialog(null, "You won the game! You win $" + currentPlayer.getAmountWagered() * 2 + "!");
+                player.addWinnings(player.getAmountWagered() * 2);
+                outcome = "Player " + (playerIndex + 1) + ": WON, won " + player.getAmountWagered() * 2;
             }
-            // Dealer's hand is > player's hand
-            else if ((dealer.getHandValue() <= 21 && (dealer.getHandValue() > currentPlayer.getHandValue()))) {
-                JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + currentPlayer.getAmountWagered() + "!");
-                balanceLabel.setText(formatAllPlayerBalances());
+            // Dealer's hand is > player's hand 
+            else if ((dealer.getHandValue() <= 21 && (dealer.getHandValue() > player.getHandValue()))) {
+                outcome = "Player " + (playerIndex + 1) + ": LOST, lost " + player.getAmountWagered();
             }
             // Player's hand is = dealer's hand
-            else if (dealer.getHandValue() == currentPlayer.getHandValue()) {
-                currentPlayer.addWinnings(currentPlayer.getAmountWagered());
-                balanceLabel.setText(formatAllPlayerBalances());
-                JOptionPane.showMessageDialog(null, "Tie game! You get $" + currentPlayer.getAmountWagered() + " back!");
+            else if (dealer.getHandValue() == player.getHandValue()) {
+                player.addWinnings(player.getAmountWagered());
+                outcome = "Player " + (playerIndex + 1) + ": TIE, made back " + player.getAmountWagered();
             }
-
-            nextGameButton.setEnabled(true);
+            return outcome;
         }
 
         // Helper method that prompts the player how much they would like to wager
@@ -371,6 +390,15 @@
             return balances.toString();
         }
 
+        // Method that is called whenever every player's turn is exhausted
+        private void playDealerTurn() {
+            while (dealer.getHandValue() < 17) {
+                dealerDrawCard();
+            }
+
+            determineGameOutcome();
+        }
+
         public class HitButtonHandler implements ActionListener {
 
             @Override
@@ -385,16 +413,13 @@
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Player currentPlayer = players.get(currentPlayerTurn);
-
-                while (dealer.getHandValue() < 17) {
-                    dealerDrawCard();
-                    if (dealer.getHandValue() > currentPlayer.getHandValue()) {
-                        determineGameOutcome();
-                        return;
-                    }
+                currentPlayerTurn++;
+                // If all players have played their turns, now it's the dealer's turn
+                if (currentPlayerTurn == numPlayers) {
+                    playDealerTurn();
+                } else {
+                    currentPlayerTurnLabel.setText("Your turn, Player " + (currentPlayerTurn + 1));
                 }
-                determineGameOutcome();
             }
         }
 
