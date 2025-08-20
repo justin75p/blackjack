@@ -29,15 +29,19 @@
 
     public class MultiplayerBlackjack {
         private JFrame frame;
+
         private JPanel gamePanel;
         private JPanel dealerPanel;
         private JPanel playerPanel;
-        private List<JPanel> playerCardsPanels;
         private JPanel allPlayerCardsPanel;
         private JPanel buttonPanel;
+        private JPanel infoPanel;
+        private List<JPanel> playerCardsPanels;
+
         private JButton hitButton;
         private JButton standButton;
         private JButton nextGameButton;
+
         private JLabel balanceLabel;
 
         private static final String BACK_CARD_PATH = "data/cards/BACK.png";
@@ -75,6 +79,13 @@
             gamePanel = new JPanel();
             initializeGamePanel();
 
+            // Info panel containing the balance of all players
+            infoPanel = new JPanel();
+            balanceLabel = new JLabel(formatAllPlayerBalances(), JLabel.CENTER);
+            initializeInfoPanel();
+
+            gamePanel.add(infoPanel);
+
             // Dealer panel containing the dealer's cards
             dealerPanel = new JPanel();
             dealerPanel.setBackground(new Color(53, 101, 77));
@@ -82,7 +93,6 @@
 
             // Player panel containing buttons and balance field
             playerPanel = new JPanel(new BorderLayout());
-            balanceLabel = new JLabel("Player " + (currentPlayerTurn + 1) + " Balance: $" + players.get(currentPlayerTurn).getBalance(), JLabel.CENTER);
             initializePlayerPanel();
 
             gamePanel.add(playerPanel, BorderLayout.SOUTH);
@@ -120,14 +130,23 @@
             gamePanel.setBackground(new Color(53, 101, 77));
         }
 
-        // Helper method to initialize the player panel containing the buttons
-        private void initializePlayerPanel() {
+        // Helper method to initialize the info panel
+        private void initializeInfoPanel() {
+            infoPanel.setBackground(new Color(53, 101, 77));
+            infoPanel.setLayout(null);
+            infoPanel.setBounds(1000, 0, 200, 100);
 
-            balanceLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            balanceLabel.setFont(new Font("Arial", Font.PLAIN, 12));
             balanceLabel.setForeground(Color.WHITE);
-            balanceLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
             balanceLabel.setOpaque(true);   
             balanceLabel.setBackground(new Color(53, 101, 77));
+            balanceLabel.setBounds(0, 0, 200, 100);
+
+            infoPanel.add(balanceLabel);
+        }
+
+        // Helper method to initialize the player panel containing the buttons
+        private void initializePlayerPanel() {
 
             buttonPanel = new JPanel();
             buttonPanel.setBackground(Color.DARK_GRAY);
@@ -154,7 +173,6 @@
             buttonPanel.add(nextGameButton);
 
             playerPanel.add(buttonPanel, BorderLayout.CENTER);
-            playerPanel.add(balanceLabel, BorderLayout.NORTH);
         }
 
         // Helper method to initialize the dealer's cards
@@ -263,7 +281,7 @@
                 hitButton.setEnabled(false);
                 standButton.setEnabled(false);
                 JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + player.getAmountWagered() + "!");
-                balanceLabel.setText("Player " + (playerIndex + 1) + " Balance: $" + player.getBalance());
+                balanceLabel.setText(formatAllPlayerBalances());
                 nextGameButton.setEnabled(true);
             }
             // Five-Card Charlie Rule
@@ -282,7 +300,7 @@
             // Five-Card Charlie Rule: player wins if they have 5 cards that have value < 21
             if (currentPlayer.getHandValue() < 21 && currentPlayer.getCards().size() == 5) {
                 currentPlayer.addWinnings(currentPlayer.getAmountWagered() * 2);
-                balanceLabel.setText("Player " + (currentPlayerTurn + 1) + " Balance: $" + currentPlayer.getBalance());
+                balanceLabel.setText(formatAllPlayerBalances());
                 JOptionPane.showMessageDialog(null,
                         "Five-Card Charlie Rule! You win $" + currentPlayer.getAmountWagered() * 2 + "!");
             }
@@ -290,18 +308,18 @@
             else if ((currentPlayer.getHandValue() <= 21 && (currentPlayer.getHandValue() > dealer.getHandValue()))
                     || dealer.getHandValue() > 21) {
                         currentPlayer.addWinnings(currentPlayer.getAmountWagered() * 2);
-                        balanceLabel.setText("Player " + (currentPlayerTurn + 1) + " Balance: $" + currentPlayer.getBalance());
+                        balanceLabel.setText(formatAllPlayerBalances());
                 JOptionPane.showMessageDialog(null, "You won the game! You win $" + currentPlayer.getAmountWagered() * 2 + "!");
             }
             // Dealer's hand is > player's hand
             else if ((dealer.getHandValue() <= 21 && (dealer.getHandValue() > currentPlayer.getHandValue()))) {
                 JOptionPane.showMessageDialog(null, "You lost the game! You lost $" + currentPlayer.getAmountWagered() + "!");
-                balanceLabel.setText("Player " + (currentPlayerTurn + 1) + " Balance: $" + currentPlayer.getBalance());
+                balanceLabel.setText(formatAllPlayerBalances());
             }
             // Player's hand is = dealer's hand
             else if (dealer.getHandValue() == currentPlayer.getHandValue()) {
                 currentPlayer.addWinnings(currentPlayer.getAmountWagered());
-                balanceLabel.setText("Player " + (currentPlayerTurn + 1) + " Balance: $" + currentPlayer.getBalance());
+                balanceLabel.setText(formatAllPlayerBalances());
                 JOptionPane.showMessageDialog(null, "Tie game! You get $" + currentPlayer.getAmountWagered() + " back!");
             }
 
@@ -313,13 +331,13 @@
             String amount;
             boolean validInput = false;
             while (!validInput) {
-                balanceLabel.setText("Player " + (playerNumber) + " Balance: $" + player.getBalance());
+                balanceLabel.setText(formatAllPlayerBalances());
                 amount = JOptionPane.showInputDialog("Enter your wager amount, Player " + playerNumber + ":");
                 try {
                     Double.parseDouble(amount);
                     if (player.wager(Double.parseDouble(amount))) {
                         validInput = true;
-                        balanceLabel.setText("Player " + (playerNumber) + " Balance: $" + player.getBalance());
+                        balanceLabel.setText(formatAllPlayerBalances());
                     } else {
                         JOptionPane.showMessageDialog(null, "Insufficient balance.");
                     }
@@ -329,6 +347,18 @@
 
             }
 
+        }
+
+        private String formatAllPlayerBalances() {
+            // JLabel doesn't understand "\n"
+            StringBuilder balances = new StringBuilder("<html>");
+
+            for (int i = 0; i < numPlayers; i++) {
+                balances.append("Player ").append(i + 1 ).append(" Balance: ").append(players.get(i).getBalance());
+                balances.append("<br>");
+            }
+            balances.append("</html>");
+            return balances.toString();
         }
 
         public class HitButtonHandler implements ActionListener {
