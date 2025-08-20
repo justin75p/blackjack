@@ -43,6 +43,7 @@
         private JButton nextGameButton;
 
         private JLabel balanceLabel;
+        private JLabel currentPlayerTurnLabel;
 
         private static final String BACK_CARD_PATH = "data/cards/BACK.png";
         private static final int CARD_HEIGHT = 175;
@@ -93,6 +94,7 @@
 
             // Player panel containing buttons and balance field
             playerPanel = new JPanel(new BorderLayout());
+            currentPlayerTurnLabel = new JLabel("Your turn, Player " + (currentPlayerTurn + 1), JLabel.CENTER);
             initializePlayerPanel();
 
             gamePanel.add(playerPanel, BorderLayout.SOUTH);
@@ -148,6 +150,12 @@
         // Helper method to initialize the player panel containing the buttons
         private void initializePlayerPanel() {
 
+            currentPlayerTurnLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            currentPlayerTurnLabel.setForeground(Color.WHITE);
+            currentPlayerTurnLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+            currentPlayerTurnLabel.setOpaque(true);   
+            currentPlayerTurnLabel.setBackground(new Color(53, 101, 77));
+
             buttonPanel = new JPanel();
             buttonPanel.setBackground(Color.DARK_GRAY);
 
@@ -173,6 +181,7 @@
             buttonPanel.add(nextGameButton);
 
             playerPanel.add(buttonPanel, BorderLayout.CENTER);
+            playerPanel.add(currentPlayerTurnLabel, BorderLayout.NORTH);
         }
 
         // Helper method to initialize the dealer's cards
@@ -349,6 +358,7 @@
 
         }
 
+        // Helper method that updates the text containing the balance of all the players
         private String formatAllPlayerBalances() {
             // JLabel doesn't understand "\n"
             StringBuilder balances = new StringBuilder("<html>");
